@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Upload Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-label:hover {
+            background-color: #0056b3;
+        }
+
+        #file-name {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Upload CSV to Import Team Members, Teams, and Mentors</h2>
+        <form id="upload-form" enctype="multipart/form-data">
+            <label class="file-label" for="csvFile">Choose File</label>
+            <input type="file" id="csvFile" accept=".csv">
+            <span id="file-name">No file chosen</span>
+            <br>
+            <button type="button" class="upload-btn" id="upload-btn">Upload File</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("csvFile").addEventListener("change", function(event) {
+            const fileName = event.target.files[0] ? event.target.files[0].name : "No file chosen";
+            document.getElementById("file-name").innerText = fileName;
+        });
+
+        document.getElementById("upload-btn").addEventListener("click", async function(event) {
+            const fileInput = document.getElementById("csvFile");
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please choose a file before uploading.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("csvFile", file);
+
+            const response = await fetch("/upload-csv", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
+    </script>
+</body>
+</html>
